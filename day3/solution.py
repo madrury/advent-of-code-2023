@@ -57,7 +57,7 @@ def number_boundaries(line: str) -> List[Tuple[int, int]]:
         end_numbers.append(len(line))
     return list(zip(begin_numbers, end_numbers))
 
-def parse_line(row: int, line: str) -> List[Number]:
+def parse_numbers_from_line(row: int, line: str) -> List[Number]:
     boundaries = number_boundaries(line)
     numbers = [
         int(line[b:e+1]) for b, e in boundaries
@@ -80,7 +80,7 @@ def adjacent_glyphs(number: Number, data: List[str]) -> Set[str]:
         adjacents.add(data[number.row][number.boundary[1] + 1])
     return adjacents
 
-def find_adjacent_gears(number: Number, gear_table: GearTable) -> Number:
+def find_gears_adjacent_to_number(number: Number, gear_table: GearTable) -> Number:
     adjacents: List[Symbol] = []
     adjacents.extend(
         gear_table.get((number.row - 1, col))
@@ -99,7 +99,7 @@ def find_adjacent_gears(number: Number, gear_table: GearTable) -> Number:
     number.adjacent_gears = [gear for gear in adjacents if gear]
     return number
 
-def find_adjacent_numbers(gear: Symbol, numbers: List[Number]) -> List[Number]:
+def find_numbers_adjacent_to_gears(gear: Symbol, numbers: List[Number]) -> List[Number]:
     adjacents: List[Number] = []
     for n in numbers:
         if any(g == gear for g in n.adjacent_gears):
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     numbers: List[Number] = []
     for row, line in enumerate(data):
-        numbers.extend(parse_line(row, line))
+        numbers.extend(parse_numbers_from_line(row, line))
 
     part_numbers = [
         n for n in numbers
@@ -132,12 +132,12 @@ if __name__ == '__main__':
     print(f"Sum of all part numbers: {sum(n.value for n in part_numbers)}")
 
     for number in numbers:
-        _ = find_adjacent_gears(number, gear_table)
+        _ = find_gears_adjacent_to_number(number, gear_table)
 
     ratios: List[int] = []
     gears = list(gear_table.values())
     for gear in gears:
-        adjacents = find_adjacent_numbers(gear, numbers)
+        adjacents = find_numbers_adjacent_to_gears(gear, numbers)
         if len(adjacents) == 2:
             ratios.append(adjacents[0].value * adjacents[1].value)
     print(f"The sum of the gear ratios is: {sum(ratios)}")
