@@ -35,7 +35,7 @@ class Map:
             if maybe: return maybe
         return x
 
-    def eval_range(self, r: range) -> [range]:
+    def eval_range(self, r: range) -> List[range]:
         queue: List[range] = [r]
         output: List[range] = []
         for segment in self.segments:
@@ -78,8 +78,8 @@ class ParseStates(Enum):
 
 def parse(data: List[str]) -> (List[Seed], List[Map]):
     state = ParseStates.SEEDS
-    seeds: [int] = []
-    maps: [Map] = []
+    seeds: List[int] = []
+    maps: List[Map] = []
     for line in data:
         if line == '':
             state = ParseStates.BLANK
@@ -101,7 +101,7 @@ def parse_seeds_line(line: str) -> List[int]:
     return [int(x) for x in seedstr.strip().split(' ')]
 
 def parse_header_line(line: str) -> Map:
-    header = line[0:-5] # String the ' map:' suffix.
+    header = line[0:-5] # Strip the ' map:' suffix.
     source, target = header.split('-to-')
     return Map(source, target, segments=[])
 
