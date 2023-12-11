@@ -19,7 +19,6 @@ class History:
             reduction.append(current)
         return reduction
 
-
 def parse_line(line: str) -> History:
     return History([int(x) for x in line.split(' ')])
 
