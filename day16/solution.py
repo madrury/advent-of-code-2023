@@ -46,7 +46,6 @@ class Photon:
 
     def tick(self, map: Map) -> List["Photon"]:
         p, h = self.position, self.heading
-        # print(p, h)
         match map[p[0]][p[1]], h:
             case '.', _:
                 return [Photon((p[0] + h[0], p[1] + h[1]), h)]
@@ -92,7 +91,7 @@ class Simulation:
     def n_illuminated(self) -> int:
         return len(self.illuminated)
 
-    def run(self, map: Map):
+    def run(self, map: Map) -> "Simulation":
         while self.photons:
             photon = self.photons.pop()
             if (not photon.in_bounds) or (photon in self.history):
@@ -101,6 +100,7 @@ class Simulation:
             self.illuminated.add(photon.position)
             newphons = photon.tick(map)
             self.photons.extend(newphons)
+        return self
 
 def iter_initial_photons():
     for i in range(N_ROW):
@@ -116,9 +116,7 @@ def solve(map: Map) -> int:
     for p in iter_initial_photons():
         if p in seen:
             continue
-        print(f"Running photon: {p.position, p.heading}")
-        s = Simulation(p)
-        s.run(map)
+        s = Simulation(p).run(map)
         M = max(M, s.n_illuminated)
         seen.update(s.history)
     return M
@@ -128,8 +126,7 @@ if __name__ == '__main__':
     map = [list(row) for row in map]
 
     λ = Photon((0, 0), Direction.EAST)
-    s = Simulation(λ)
-    s.run(map)
+    s = Simulation(λ).run(map)
     print(f"The number of illuminated tiles is {len(s.illuminated)}")
 
     M = solve(map)
