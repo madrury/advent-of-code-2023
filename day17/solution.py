@@ -35,7 +35,6 @@ class Node:
     def nexts(self) -> Iterable["Node"]:
         c, d, t = self.coordinate, self.direction, self.times
         for nd in Direction:
-            # print(nd)
             if nd == OPPOSITE_DIRECTION[d]:
                 continue
             elif nd == d:
